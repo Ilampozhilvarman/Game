@@ -27,14 +27,14 @@ function preload() {
 }
 
 function create() {
-    this.square = this.add.rectangle(400, 300, 50, 50, 0x00ff00);
+    this.square = this.add.rectangle(400, 300, 70, 70, 0x00ff00);
     this.physics.add.existing(this.square);
     this.square.body.setCollideWorldBounds(true);
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 }
 
 function update() {
-    let groundLevel = window.innerHeight - 25;
+    let groundLevel = window.innerHeight - 35;
     if (!this.square.body.blocked.down) {
         console.log("The square is on the ground!");
         return;
