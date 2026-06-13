@@ -9,7 +9,7 @@ const config = {
      physics: {
          default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 600 },
             debug: false
         }
     },
@@ -27,30 +27,48 @@ function preload() {
 }
 
 function create() {
-    this.square = this.add.rectangle(400, 300, 70, 70, 0x00ff00);
+    this.spikeTexture = this.make.graphics({ x: 0, y: 0, add: false });
+    this.spikeTexture.fillStyle(0xff2a6d, 1);
+    this.spikeTexture.lineStyle(2, 0xffffff, 1);
+    this.spikeTexture.beginPath();
+    this.spikeTexture.moveTo(20, 0);
+    this.spikeTexture.lineTo(40, 40);
+    this.spikeTexture.lineTo(0, 40);
+    this.spikeTexture.closePath();
+    this.spikeTexture.fillPath();
+    this.spikeTexture.strokePath();
+    this.spikeTexture.generateTexture('spike', 40, 40);
+    this.square = this.add.rectangle(400, 300, 60, 60, 0x00ff00);
     this.physics.add.existing(this.square);
     this.square.body.setCollideWorldBounds(true);
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    let groundLevel = window.innerHeight - 35;
+    let groundLevel = window.innerHeight - 30;
     let middle = window.innerWidth / 2;
+    this.spike = this.physics.add.sprite(middle + 100, window.innerHeight - 20, 'spike');
+    this.spike.body.setAllowGravity(false);
+    this.spike.body.setImmovable(true);
     this.square.y = groundLevel;
     this.square.x = middle - 35;
+    this.physics.add.collider(this.square, this.spike, () => {
+        this.square.body.setVelocityY(0);
+        this.square.y = groundLevel;
+    }, null, this);
 }
 
 function update() {
+    this.physics.add.existing(this.spikeTexture);
+    this.spikeTexture.y = window.innerHeight - 20;
     let groundLevel = window.innerHeight - 35;
-    if (!this.square.body.blocked.down) {
-        console.log("The square is on the ground!");
-        return;
-    }
-    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-        this.square.body.setVelocityY(-250);
+    if (Phaser.Input.Keyboard.JustDown(this.spacebar) && this.square.body.blocked.down) {
+        this.square.body.setVelocityY(-350);
         this.tweens.add({
             targets: this.square,
-            angle: 360,
-            duration: 4000,
-            ease: 'Linear',
-            repeat: 1
+            angle: this.square.angle + 180,
+            duration: 1200,
+            ease: 'Linear'
         });
+        if (this.square.body.blocked.down && this.square.angle % 90 !== 0) {
+            this.square.angle = Math.round(this.square.angle / 90) * 90;
+        }
     }
 }
