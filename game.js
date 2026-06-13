@@ -31,6 +31,10 @@ function create() {
     this.physics.add.existing(this.square);
     this.square.body.setCollideWorldBounds(true);
     this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    let groundLevel = window.innerHeight - 35;
+    let middle = window.innerWidth / 2;
+    this.square.y = groundLevel;
+    this.square.x = middle - 35;
 }
 
 function update() {
