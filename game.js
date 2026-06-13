@@ -4,8 +4,8 @@ let sizes = {
 }
 const config = {
     type: Phaser.AUTO,
-    width: sizes.width,
-    height: sizes.height,
+    width: window.innerWidth,
+    height: window.innerHeight,
      physics: {
          default: 'arcade',
         arcade: {
@@ -32,8 +32,11 @@ function create() {
     square.body.setCollideWorldBounds(true);
     square.body.setBounce(0.2);
     square.body.setVelocity(200, 150);
+    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 }
 
 function update() {
-
+    if (this.spacebar.isDown) {
+        square.body.setVelocityY(-300);
+    }
 }
