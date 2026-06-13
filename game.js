@@ -9,7 +9,7 @@ const config = {
      physics: {
          default: 'arcade',
         arcade: {
-            gravity: { y: 0 },
+            gravity: { y: 300 },
             debug: false
         }
     },
@@ -40,37 +40,13 @@ function update() {
         return;
     }
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-
-        // Establish safe local references to avoid context scope errors
-        let mySquare = this.square;
-        let startX = mySquare.x;
-        let startY = mySquare.y;
-        
-        // 4. Define the curved path relative to the square's current position
-        const curve = new Phaser.Curves.QuadraticBezier(
-            startX, startY,              // Start Position
-            startX + 200, startY - 250,  // Control Point (Pulls the line 250px UP)
-            startX + 400, startY         // End Position (Lands 400px FORWARD)
-        );
-
-        const path = new Phaser.Curves.Path(startX, startY).add(curve);
-
-        // 5. Use a tween to progress from 0 (start of path) to 1 (end of path)
+        this.square.body.setVelocityY(-250);
         this.tweens.add({
-            targets: mySquare,
-            z: 1,
-            getStart: () => 0,
-            getEnd: () => 1,
-            duration: 800, // Time in milliseconds to complete the curve (0.8 seconds)
-            
-            // On every single frame, pull the exact X/Y coordinate from the path math
-            onUpdate: (tween) => {
-                let position = path.getPoint(tween.getValue());
-                mySquare.x = position.x;
-                mySquare.y = position.y;
-            },
-
-            // Reset the movement lock once the jump is finished
+            targets: this.square,
+            angle: 360,
+            duration: 4000,
+            ease: 'Linear',
+            repeat: 1
         });
     }
 }
